@@ -1,0 +1,21 @@
+name: atsbilet
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      TZ: "Europe/Istanbul"
+    volumes:
+      - sqlite_data:/var/www/html/storage   # named volume
+    # storage klasörü ve boş DB dosyasını garanti et
+    command: >
+      sh -lc "mkdir -p storage &&
+              [ -f storage/database.sqlite ] || touch storage/database.sqlite &&
+              php -S 0.0.0.0:8000 -t public"
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
+    driver: local
